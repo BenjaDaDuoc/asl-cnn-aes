@@ -103,7 +103,7 @@ Este proyecto sigue las fases de **CRISP-DM** (Cross Industry Standard Process f
 ## 9. Estructura del proyecto
 
 ```
-proyecto_sign_language/
+asl-mlp-aes/
 ├── README.md                              <- este archivo
 ├── data/
 │   ├── sign_mnist_train.csv
