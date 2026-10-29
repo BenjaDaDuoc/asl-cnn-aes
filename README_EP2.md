@@ -6,7 +6,7 @@
 **Problema:** clasificación de imágenes de signos estáticos del alfabeto dactilológico estadounidense (ASL).  
 **Variante del equipo:** letras **A, E y S**, igual que en la Evaluación Parcial 1 (EP1).
 
-**Estado:** etapas 1–5 ejecutadas en Colab y guardadas en la rama `develop`, incluyendo comparación MLP/CNN, Feature Maps y Grad-CAM para cada clase. Los seis archivos externos de la etapa 5 están subidos a `images/` y `reports/`. El benchmark de tiempos con los tres modelos permanece sin ejecutar: la rúbrica solicita la comparación temporal MLP/CNN, de modo que debe completarse o declararse expresamente como limitación. Este documento acompaña el trabajo en `develop`; el README original de la MLP se conserva en esta etapa.
+**Estado:** etapas 1–5 ejecutadas en Colab y guardadas en la rama `develop`, incluyendo comparación MLP/CNN, Feature Maps y Grad-CAM para cada clase. Los seis archivos externos de la etapa 5 están subidos a `images/` y `reports/`. El benchmark controlado de tiempos MLP/CNN ya se ejecutó en la misma sesión de Colab; resultados guardados en `reports/benchmark_tiempos_mlp_cnn.csv` (MLP 31,92 s; CNN base 79,13 s; CNN seleccionada 128,02 s). Este documento acompaña el trabajo en `develop`; el README original de la MLP se conserva en esta etapa.
 
 ## Archivo principal
 
@@ -154,7 +154,7 @@ El notebook `notebooks/proyecto_cnn_aes.ipynb` incluye ahora las secciones **21�
 2. Tabla de accuracy, precision, recall, F1 macro, parámetros entrenables y aciertos por modelo; comparación de recall y errores por clase.
 3. Visualización de **Feature Maps** de `conv_bordes` (28×28) y `conv_patrones` (14×14) con ocho filtros de cada capa para una imagen A, E y S.
 4. Visualización de **Grad-CAM para cada clase A/E/S** en esas tres imágenes. El cálculo utiliza gradientes del logit previo a softmax con los pesos guardados y no modifica el modelo.
-5. **Benchmark opcional** con MLP y las dos CNN bajo condiciones equivalentes. Desactivado de forma predeterminada: solo cambiar `EJECUTAR_BENCHMARK_TIEMPOS = True` si se desea medir de nuevo los tiempos con un mismo entorno.
+5. **Benchmark controlado ejecutado** con MLP y ambas CNN bajo las mismas condiciones; `EJECUTAR_BENCHMARK_TIEMPOS = True` figura en la ejecución guardada. Se midieron 31,92 s (MLP), 79,13 s (CNN base) y 128,02 s (CNN seleccionada). Estas son mediciones de `fit()` de modelos nuevos, diferentes de los checkpoints seleccionados para test. No es necesario repetir la ejecución.
 
 **Ejecución comprobada:** las cinco celdas de código de etapa 5 guardan salidas sin errores. El checkpoint de MLP reprodujo 94,51 % de accuracy y el de CNN 97,95 %; ambas se evaluaron con las mismas 1.075 imágenes de test. Los errores de CNN son 22 y coinciden con errores de la MLP; la MLP se equivoca en otros 37 ejemplos que la CNN acierta. Los Feature Maps de A/E/S y los nueve mapas Grad-CAM se generaron. Un mapa de clase A para una imagen S no presentó contribuciones positivas (Grad-CAM con ReLU): esto se informó como limitación interpretativa, no como error de ejecución. Los gráficos y CSV se subieron al repositorio.
 
@@ -163,7 +163,7 @@ Las activaciones son interpretaciones aproximadas de patrones visuales, no una p
 ## Próximas etapas
 
 1. Revisar las conclusiones finales, las limitaciones del dataset y los criterios de la pauta EP2.
-2. Opcional: ejecutar el benchmark controlado para comparar tiempos de entrenamiento de MLP y ambas CNN en igualdad de condiciones.
+2. Interpretar el benchmark ya ejecutado (MLP 31,92 s; CNN base 79,13 s; CNN más filtros 128,02 s) en la presentación; no mezclar estos tiempos con los del entrenamiento original.
 3. Preparar y ensayar la presentación de hasta diez minutos, respaldada en los resultados reales.
 
 ## Alcance responsable
