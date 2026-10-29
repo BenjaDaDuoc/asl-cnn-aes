@@ -3,7 +3,7 @@
 **Asignatura:** Técnicas Avanzadas de Machine Learning I  
 **Proyecto:** Reconocimiento de configuraciones estáticas A/E/S del alfabeto dactilológico estadounidense (ASL)  
 **Implementación:** Python, TensorFlow/Keras, scikit-learn  
-**Estado:** trabajo experimental completado y documentado en `develop`. La comparación homogénea de tiempos MLP/CNN está pendiente.  
+**Estado:** trabajo experimental completado en `develop`, incluido benchmark controlado de tiempos MLP/CNN; pendientes solamente revisión final, defensa y eventual fusión del repositorio.  
 **Evidencias:** [notebook ejecutado](notebooks/proyecto_cnn_aes.ipynb), [reportes](reports/README.md), [modelos](models/), [visualizaciones](images/).
 
 ## 1. Descripción del problema de negocio y continuidad con la EP1
@@ -124,7 +124,15 @@ La CNN obtuvo **37 aciertos adicionales**, equivalente a una mejora absoluta de 
 
 **Ventaja CNN:** extracción automática de patrones locales y conservación de relaciones espaciales mediante filtros; **desventajas:** más parámetros en la variante elegida, mayor costo y una interpretación imperfecta. **Ventaja MLP:** arquitectura densa más directa para datos tabulares o vectores aplanados; **desventaja para imágenes:** no utiliza explícitamente la estructura espacial 2D.
 
-**Tiempo de entrenamiento:** se midieron de forma homogénea **las dos CNN** (87,44 s y 129,38 s). **Falta una medición de tiempo de la MLP en la misma configuración**, por lo que no corresponde afirmar qué arquitectura entrena más rápido con evidencia cuantitativa. La rúbrica solicita esta comparación; el notebook contiene un benchmark de tres modelos (desactivado por defecto) para completarla.
+**Tiempo de entrenamiento (benchmark homogéneo en Colab):** se entrenaron **tres modelos nuevos** en la misma sesión, con las mismas particiones train/val, batch size 64, Adam, tasa inicial 0,001, 40 épocas máximas y callbacks de EarlyStopping/ReduceLROnPlateau. Se midió el tiempo transcurrido de `fit()`, incluyendo las validaciones por época.
+
+| Modelo reentrenado para benchmark | Épocas efectivas | Tiempo de fit | Parámetros | Accuracy validación |
+|---|---:|---:|---:|---:|
+| MLP | 40 | **31,92 s** | 108.931 | 100 % |
+| CNN base | 35 | **79,13 s** | 105.411 | 100 % |
+| CNN más filtros | 30 | **128,02 s** | 219.779 | 100 % |
+
+En esta sesión, la **MLP fue la más rápida** y la CNN elegida tardó unas **4,01 veces** más que la MLP, pese a ejecutar menos épocas (30 frente a 40). Esta comparación representa el **tiempo total bajo la misma política de parada**, no costo por época ni una medición independiente de diferencias entre hardware. Los checkpoints históricos utilizados para las métricas de **test no fueron reemplazados** por los modelos del benchmark; los porcentajes de test anteriores se mantienen. El 100 % de validación de los tres modelos no demuestra generalización externa. Evidencia: [CSV de benchmark](reports/benchmark_tiempos_mlp_cnn.csv) y celda ejecutada de la sección 25 del notebook.
 
 **Evidencia:** [tabla comparativa](reports/comparacion_mlp_cnn_test.csv), [resultados por letra](reports/comparacion_por_letra_mlp_cnn.csv), [gráfico comparativo](images/comparacion_recall_mlp_cnn.png).
 
@@ -147,7 +155,7 @@ Se generaron mapas **Grad-CAM condicionados por clase A, E y S** para tres imág
 
 La CNN seleccionada resolvió mejor que la MLP el benchmark académico A/E/S, pasando de 94,51 % a **97,95 %** de accuracy y de 93,65 % a **97,72 %** de F1 macro. Su fortaleza es procesar la **estructura espacial** de los píxeles antes de clasificar, aunque utiliza más parámetros que la MLP en este experimento. El principal error sigue siendo **S confundida con E** (21 casos), lo que revela una limitación que no se observa mirando solo la accuracy global.
 
-Las curvas de entrenamiento y la validación perfecta muestran ajuste alto a los datos disponibles, pero **no prueban generalización externa**. Las visualizaciones Feature Maps y Grad-CAM muestran patrones aprendidos y zonas de activación, sin convertirlos en explicaciones causales definitivas. La comparación de tiempos MLP/CNN en condiciones equivalentes y la validación con fotos independientes se mantienen como mejoras pendientes.
+Las curvas de entrenamiento y la validación perfecta muestran ajuste alto a los datos disponibles, pero **no prueban generalización externa**. Las visualizaciones Feature Maps y Grad-CAM muestran patrones aprendidos y zonas de activación, sin convertirlos en explicaciones causales definitivas. El benchmark de tiempos MLP/CNN confirmó un costo de entrenamiento superior de la CNN seleccionada en esta sesión; la validación con fotos y personas independientes continúa pendiente como trabajo futuro.
 
 ## 13. Reproducibilidad y archivos
 
@@ -160,6 +168,6 @@ python -m pip install -r requirements.txt
 jupyter notebook
 ```
 
-Abre `notebooks/proyecto_cnn_aes.ipynb`. Está organizado en etapas de EDA, arquitectura, entrenamiento, test y comparación. Las celdas de evaluación y visualización de las etapas 4 y 5 pueden reproducirse con los modelos guardados sin reentrenar; las celdas de entrenamiento permiten repetir el experimento si se requiere. El benchmark de tiempos está desactivado de forma predeterminada. El directorio `data/` contiene los CSV, `models/` los checkpoints, `reports/` las métricas y `images/` las evidencias.
+Abre `notebooks/proyecto_cnn_aes.ipynb`. Está organizado en etapas de EDA, arquitectura, entrenamiento, test y comparación. Las celdas de evaluación y visualización de las etapas 4 y 5 pueden reproducirse con los modelos guardados sin reentrenar; las celdas de entrenamiento permiten repetir el experimento si se requiere. El benchmark de tiempos se ejecutó y está guardado; para evitar reentrenamientos accidentales no es necesario ejecutarlo otra vez. El directorio `data/` contiene los CSV, `models/` los checkpoints, `reports/` las métricas y `images/` las evidencias.
 
 **Fuentes de evidencia:** conjunto de datos Sign Language MNIST, código y salidas del notebook, archivos CSV/JSON del proyecto y rúbrica oficial EP2. Los resultados numéricos reportados corresponden a ejecuciones reales documentadas, no a estimaciones.
