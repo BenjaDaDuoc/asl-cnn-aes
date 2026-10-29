@@ -79,6 +79,19 @@ La CNN clasificó todas las imágenes A correctamente. La principal dificultad s
 
 La CNN mejoró el porcentaje de aciertos en **3,44 puntos porcentuales** (37 aciertos adicionales), en el mismo conjunto test A/E/S. Esto es evidencia favorable, pero el dataset tiene imágenes transformadas a partir de fotos de origen, por lo que no se extrapola directamente a señas de nuevos sujetos. Las velocidades de entrenamiento **no se comparan** con la MLP histórica.
 
-La etapa 4 queda registrada en `metricas_test_cnn.json`, `metricas_test_cnn.csv`, `metricas_por_clase_test_cnn.csv` y `matriz_confusion_test_cnn.csv`. El notebook `notebooks/proyecto_cnn_aes.ipynb` contiene las celdas para reproducir estos resultados y exportar las imágenes de la matriz de confusión y ejemplos correctos/incorrectos. Las celdas nuevas todavía no tienen salidas de Colab guardadas; se deben ejecutar allí y confirmar los mismos valores antes de la entrega.
+La etapa 4 queda registrada en `metricas_test_cnn.json`, `metricas_test_cnn.csv`, `metricas_por_clase_test_cnn.csv` y `matriz_confusion_test_cnn.csv`. El notebook `notebooks/proyecto_cnn_aes.ipynb` contiene las celdas para reproducir estos resultados y exportar las imágenes de la matriz de confusión y ejemplos correctos/incorrectos. Las celdas de la etapa 4 **se ejecutaron y sus salidas se guardaron desde Colab con backend TensorFlow**: se confirmaron 1.053 aciertos y 22 errores, sin errores de ejecución. Los gráficos ya aparecen incrustados en el notebook.
 
 **Pendiente para etapa 5:** análisis de activaciones, Feature Maps, comparación experimental ampliada y conclusiones para la presentación oral.
+
+## Etapa 5 — Comparación e interpretabilidad (implementada, pendiente de ejecución)
+
+El notebook actualizado contiene las secciones 21–26 con:
+
+- Carga del `models/mlp_asl_aes.keras` original y evaluación de MLP sobre las mismas 1.075 imágenes, sin modificar los modelos.
+- Comparación de accuracy, precision, recall y F1 macro; parámetros y métricas por clase con tablas y gráficos.
+- Feature Maps (primeras dos convoluciones, 8 filtros por capa) sobre tres imágenes A/E/S correctamente clasificadas.
+- Grad-CAM con los pesos del clasificador final, para las activaciones asociadas a **cada clase** en tres imágenes representativas; no altera los pesos ni selecciona hiperparámetros con test.
+- Benchmark controlado opcional de tiempos de entrenamiento MLP vs dos CNN; **desactivado por defecto** para no repetir entrenamiento sin necesidad.
+- Interpretación, limitaciones, reflexiones y guía de defensa de máximo 10 minutos.
+
+**Se requiere ejecutar las nuevas celdas 21–26 en Colab** para generar los gráficos y reportes adicionales. Si el Colab actual sigue activo con variables de la etapa 4, no hace falta repetir etapas previas; si no, ejecuta solo las celdas de la etapa 4 para cargar el modelo y el test. Después guarda el notebook ejecutado con Ctrl+S a `develop`. Los PNG/CSV generados se suben por separado.
