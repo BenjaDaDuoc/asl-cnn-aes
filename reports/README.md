@@ -81,9 +81,9 @@ La CNN mejoró el porcentaje de aciertos en **3,44 puntos porcentuales** (37 aci
 
 La etapa 4 queda registrada en `metricas_test_cnn.json`, `metricas_test_cnn.csv`, `metricas_por_clase_test_cnn.csv` y `matriz_confusion_test_cnn.csv`. El notebook `notebooks/proyecto_cnn_aes.ipynb` contiene las celdas para reproducir estos resultados y exportar las imágenes de la matriz de confusión y ejemplos correctos/incorrectos. Las celdas de la etapa 4 **se ejecutaron y sus salidas se guardaron desde Colab con backend TensorFlow**: se confirmaron 1.053 aciertos y 22 errores, sin errores de ejecución. Los gráficos ya aparecen incrustados en el notebook.
 
-**Pendiente para etapa 5:** análisis de activaciones, Feature Maps, comparación experimental ampliada y conclusiones para la presentación oral.
+**Etapa 5 completada:** comparación del checkpoint MLP con CNN y visualizaciones de activaciones registradas en el notebook y en las carpetas de reportes e imágenes.
 
-## Etapa 5 — Comparación e interpretabilidad (implementada, pendiente de ejecución)
+## Etapa 5 — Comparación e interpretabilidad (ejecutada)
 
 El notebook actualizado contiene las secciones 21–26 con:
 
@@ -94,4 +94,8 @@ El notebook actualizado contiene las secciones 21–26 con:
 - Benchmark controlado opcional de tiempos de entrenamiento MLP vs dos CNN; **desactivado por defecto** para no repetir entrenamiento sin necesidad.
 - Interpretación, limitaciones, reflexiones y guía de defensa de máximo 10 minutos.
 
-**Se requiere ejecutar las nuevas celdas 21–26 en Colab** para generar los gráficos y reportes adicionales. Si el Colab actual sigue activo con variables de la etapa 4, no hace falta repetir etapas previas; si no, ejecuta solo las celdas de la etapa 4 para cargar el modelo y el test. Después guarda el notebook ejecutado con Ctrl+S a `develop`. Los PNG/CSV generados se suben por separado.
+**Verificado en el notebook guardado:** las cinco celdas de código de esta etapa se ejecutaron sin errores. La MLP original reconstruida a partir de los pesos del checkpoint produjo exactamente 1.016/1.075 aciertos (94,51 %), mientras que la CNN produjo 1.053/1.075 (97,95 %). Los 22 errores de la CNN también fueron errores de la MLP; la MLP cometió 37 errores adicionales que la CNN acertó.
+
+**Comparación por letra:** el recall de E pasó de 95,58 % a 99,80 % (+4,22 pp), y el de S de 84,96 % a 91,46 % (+6,50 pp). A mantuvo 100 % de recall. Los `Feature Maps` generados contienen las formas (3,28,28,32) y (3,14,14,64). Los mapas Grad-CAM para A/E/S se generaron; se informó que una combinación (imagen S, clase A) no mostró contribuciones positivas, algo que no debe interpretarse como ausencia de información visual.
+
+Los archivos `comparacion_mlp_cnn_test.csv`, `comparacion_por_letra_mlp_cnn.csv`, `comparacion_recall_mlp_cnn.png`, `feature_maps_primera_conv.png`, `feature_maps_segunda_conv.png` y `gradcam_activaciones_por_clase.png` ya están subidos a `develop`. El benchmark opcional quedó desactivado y no se deben comparar tiempos históricos de MLP y CNN como si fueran mediciones equivalentes.
