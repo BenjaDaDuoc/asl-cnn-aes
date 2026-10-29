@@ -4,7 +4,7 @@
 **Problema:** clasificación de imágenes de signos estáticos del alfabeto dactilológico estadounidense (ASL).  
 **Variante del equipo:** letras **A, E y S**, igual que en la Evaluación Parcial 1 (EP1).
 
-**Estado:** etapas 1–4 implementadas y ejecutadas con resultados reales. La evaluación sobre el test se reprodujo también en Colab con TensorFlow y se guardó con sus salidas. **Etapa 5 programada en el notebook, pendiente de ejecutar en Colab**: comparación del checkpoint MLP, Feature Maps, Grad-CAM para cada clase y un benchmark opcional de tiempos. Este documento acompaña el trabajo en `develop`; el README original de la MLP se conserva en esta etapa.
+**Estado:** etapas 1–5 ejecutadas en Colab y guardadas en la rama `develop`, incluyendo comparación MLP/CNN, Feature Maps y Grad-CAM para cada clase. Los seis archivos externos de la etapa 5 están subidos a `images/` y `reports/`. El benchmark de tiempos con los tres modelos es opcional y permanece sin ejecutar. Este documento acompaña el trabajo en `develop`; el README original de la MLP se conserva en esta etapa.
 
 ## Archivo principal
 
@@ -142,27 +142,27 @@ La dificultad principal fue **S confundida con E** (21 imágenes, recall de S �
 
 **Limitaciones:** el dataset puede compartir variantes de fotografías de origen entre particiones. La accuracy en este benchmark no demuestra desempeño con sujetos nuevos ni valida un traductor de LSCh.
 
-## Etapa 5 — Interpretabilidad y comparación MLP/CNN (código listo)
+## Etapa 5 — Interpretabilidad y comparación MLP/CNN (ejecutada y verificada)
 
-**Compatibilidad del checkpoint MLP de la EP1:** el archivo `models/mlp_asl_aes.keras` fue serializado con parámetros de `GlorotUniform` que algunas versiones actuales de Keras no admiten (`input_axes`, `output_axes`). La sección 21 se actualizó para reconstruir la arquitectura exacta (784→128→64→3, 108.931 parámetros) y llamar a `load_weights(..., skip_mismatch=False)` en el archivo original. **Se preservan los pesos aprendidos; no se reentrena ni se modifica el modelo original.** Si ya tienes Colab abierto, cambia esa celda o vuelve a abrir la última versión de `develop`; no es necesario repetir el entrenamiento de la etapa 3. Se verificó el mecanismo con una prueba de compatibilidad que reproduce el error de deserialización y recupera las predicciones originales idénticas.
+**Compatibilidad del checkpoint MLP de la EP1:** el archivo `models/mlp_asl_aes.keras` fue serializado con parámetros de `GlorotUniform` que algunas versiones actuales de Keras no admiten (`input_axes`, `output_axes`). La sección 21 se actualizó para reconstruir la arquitectura exacta (784→128→64→3, 108.931 parámetros) y llamar a `load_weights(..., skip_mismatch=False)` en el archivo original. **Se preservan los pesos aprendidos; no se reentrena ni se modifica el modelo original.** La corrección se ejecutó satisfactoriamente en Colab, sin repetir el entrenamiento. Se verificó el mecanismo con una prueba de compatibilidad que reproduce el error de deserialización y recupera las predicciones originales idénticas.
 
 El notebook `notebooks/proyecto_cnn_aes.ipynb` incluye ahora las secciones **21–26**, que permiten analizar por qué mejora la CNN sin alterar su entrenamiento:
 
-1. Carga de `models/mlp_asl_aes.keras` y evaluación del checkpoint MLP sobre **exactamente el mismo test A/E/S**. Si sus métricas cambian respecto a la EP1 histórica, se reportará la discrepancia de forma explícita.
+1. Carga de `models/mlp_asl_aes.keras` y evaluación del checkpoint MLP sobre **exactamente el mismo test A/E/S**. Las métricas reproducidas coinciden con la EP1: 1.016 aciertos de 1.075.
 2. Tabla de accuracy, precision, recall, F1 macro, parámetros entrenables y aciertos por modelo; comparación de recall y errores por clase.
 3. Visualización de **Feature Maps** de `conv_bordes` (28×28) y `conv_patrones` (14×14) con ocho filtros de cada capa para una imagen A, E y S.
 4. Visualización de **Grad-CAM para cada clase A/E/S** en esas tres imágenes. El cálculo utiliza gradientes del logit previo a softmax con los pesos guardados y no modifica el modelo.
 5. **Benchmark opcional** con MLP y las dos CNN bajo condiciones equivalentes. Desactivado de forma predeterminada: solo cambiar `EJECUTAR_BENCHMARK_TIEMPOS = True` si se desea medir de nuevo los tiempos con un mismo entorno.
 
-**Para ejecutar:** abre la última versión de `develop` en Colab. Si se perdió el estado de la sesión, ejecuta únicamente las celdas de la etapa 4 (16–20) para cargar el test y los modelos; luego ejecuta las de etapa 5 (21–26). **No vuelvas a entrenar la etapa 3.** Guarda los cambios del notebook en GitHub con Ctrl+S y conserva también los nuevos CSV/PNG por separado.
+**Ejecución comprobada:** las cinco celdas de código de etapa 5 guardan salidas sin errores. El checkpoint de MLP reprodujo 94,51 % de accuracy y el de CNN 97,95 %; ambas se evaluaron con las mismas 1.075 imágenes de test. Los errores de CNN son 22 y coinciden con errores de la MLP; la MLP se equivoca en otros 37 ejemplos que la CNN acierta. Los Feature Maps de A/E/S y los nueve mapas Grad-CAM se generaron. Un mapa de clase A para una imagen S no presentó contribuciones positivas (Grad-CAM con ReLU): esto se informó como limitación interpretativa, no como error de ejecución. Los gráficos y CSV se subieron al repositorio.
 
 Las activaciones son interpretaciones aproximadas de patrones visuales, no una prueba de que cada filtro represente un dedo concreto ni de que el modelo funcione con personas nuevas.
 
 ## Próximas etapas
 
-1. Ejecutar la etapa 5 en Colab y guardar las gráficas y resultados de interpretabilidad.
-2. Opcional: ejecutar el benchmark controlado para comparar los tiempos de entrenamiento en igualdad de condiciones.
-3. Completar conclusiones con las nuevas observaciones y preparar la defensa oral individual de máximo diez minutos.
+1. Revisar las conclusiones finales, las limitaciones del dataset y los criterios de la pauta EP2.
+2. Opcional: ejecutar el benchmark controlado para comparar tiempos de entrenamiento de MLP y ambas CNN en igualdad de condiciones.
+3. Preparar y ensayar la presentación de hasta diez minutos, respaldada en los resultados reales.
 
 ## Alcance responsable
 
