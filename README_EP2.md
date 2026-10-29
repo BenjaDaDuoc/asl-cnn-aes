@@ -4,7 +4,7 @@
 **Problema:** clasificación de imágenes de signos estáticos del alfabeto dactilológico estadounidense (ASL).  
 **Variante del equipo:** letras **A, E y S**, igual que en la Evaluación Parcial 1 (EP1).
 
-**Estado:** etapas 1–3 ejecutadas en Google Colab — EDA, arquitecturas y entrenamiento real de ambas CNN (TensorFlow 2.21.0). **Resultados de validación y notebook ejecutado disponibles; test oficial aún sin evaluar.** Los modelos y PNG se respaldaron en ZIP y todavía necesitan subirse individualmente al repositorio. Este documento acompaña el trabajo en `develop`; el README original de la MLP se conserva en esta etapa.
+**Estado:** etapas 1–3 ejecutadas en Colab (TensorFlow 2.21.0); etapa 4 implementada en el notebook y evaluación inicial sobre test oficial **realizada usando Keras 3.13.2 con backend PyTorch sobre el modelo entrenado**, sin reentrenarlo. Se guardaron métricas, matriz de confusión e interpretación. **Pendiente:** ejecutar las nuevas celdas de etapa 4 en Colab/TensorFlow para guardar sus salidas y PNG. Este documento acompaña el trabajo en `develop`; el README original de la MLP se conserva en esta etapa.
 
 ## Archivo principal
 
@@ -12,6 +12,7 @@
 - `notebooks/proyecto_lenguaje_señas.ipynb`: MLP original de la EP1; sirve como línea base.
 - `data/sign_mnist_train.csv`, `data/sign_mnist_test.csv`: dataset original ya incluido en el repositorio.
 - `models/mlp_asl_aes.keras`: modelo anterior; **no se sobrescribe**.
+- `models/cnn_base.keras` y `models/cnn_mas_filtros.keras`: ambos modelos CNN entrenados, guardados en `develop`.
 - `requirements.txt`: dependencias del proyecto (incluye TensorFlow/Keras).
 - `reports/`: historiales completos, resumen CSV/JSON y [análisis de resultados](reports/README.md) de la etapa 3.
 
@@ -111,11 +112,40 @@ Los **resultados reales de validación** están registrados en `reports/README.m
 - `reports/historial_cnn_base.csv`, `reports/historial_cnn_mas_filtros.csv`, `reports/resumen_entrenamiento_cnn.csv`, `reports/resultados_etapa3_cnn.json`.
 - `images/loss_cnn_base.png`, `images/accuracy_cnn_base.png`, `images/loss_cnn_mas_filtros.png`, `images/accuracy_cnn_mas_filtros.png`, `images/comparacion_val_loss_cnn.png`.
 
+## Etapa 4 — Evaluación del modelo seleccionado (test oficial)
+
+**Modelo fijado antes del test:** `cnn_mas_filtros`, seleccionado por menor `val_loss` restaurada durante la etapa 3.
+
+La evaluación realizada con el checkpoint entrenado, cargado en Keras 3.13.2 (backend PyTorch), utilizó **1.075 imágenes del test original**. El modelo no se reentrenó ni se ajustaron sus hiperparámetros.
+
+| Métrica | Resultado de test |
+|---|---:|
+| Accuracy | **97,95 %** (1.053/1.075) |
+| Precision macro | 98,50 % |
+| Recall macro | 97,09 % |
+| F1 macro | 97,72 % |
+| Errores | 22 |
+
+**Matriz de confusión**, filas reales / columnas predichas:
+
+| Real \\ Predicción | A | E | S |
+|---|---:|---:|---:|
+| A | 331 | 0 | 0 |
+| E | 0 | 497 | 1 |
+| S | 0 | **21** | 225 |
+
+La dificultad principal fue **S confundida con E** (21 imágenes, recall de S ≈ 91,46 %). La MLP previa había alcanzado 94,51 % de accuracy: la CNN mejora en **3,44 puntos porcentuales**, con 37 aciertos adicionales. Es una comparación descriptiva del mismo test; no compara tiempos en las mismas condiciones.
+
+**Evidencias:** [reportes de etapa 4](reports/README.md), [métricas JSON](reports/metricas_test_cnn.json), [matriz en SVG](images/matriz_confusion_test_cnn.svg) y secciones 16–20 del [notebook actualizado](notebooks/proyecto_cnn_aes.ipynb).
+
+Para reproducir el resultado en **Colab con TensorFlow**, abre la versión actualizada del notebook desde `develop`, clona el repositorio si no existe aún en `/content/asl-cnn-aes` y ejecuta únicamente las nuevas celdas de **etapa 4** (secciones 16–20). **No es necesario volver a entrenar**. Los nuevos PNG y resultados exportados deben guardarse/descargarse, pues Colab usa almacenamiento temporal. Si los decimales difieren levemente por el backend, registra los resultados obtenidos en TensorFlow sin reemplazar silenciosamente esta medición.
+
+**Limitaciones:** el dataset puede compartir variantes de fotografías de origen entre particiones. La accuracy en este benchmark no demuestra desempeño con sujetos nuevos ni valida un traductor de LSCh.
+
 ## Próximas etapas
 
-1. **Etapa 4:** evaluar una sola vez el modelo seleccionado en el test original con accuracy, precision, recall, F1, matriz de confusión y análisis de errores.
-2. **Etapa 5:** reentrenar MLP con condiciones comparables, comparar rendimiento y tiempos y visualizar Feature Maps y mapas de activación de cada clase.
-3. Documentar observaciones reales, limitaciones y consideraciones éticas; preparar la defensa individual de hasta diez minutos.
+1. **Etapa 5:** comparación más profunda MLP/CNN, medición de tiempos bajo condiciones equivalentes y visualización de Feature Maps y mapas de activación por clase.
+2. Documentar conclusiones y limitaciones usando resultados observados y preparar la defensa individual de hasta diez minutos.
 
 ## Alcance responsable
 
