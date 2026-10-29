@@ -1,0 +1,9 @@
+metrica,valor
+accuracy,0.9795348837209302
+precision_macro,0.9850115602327992
+recall_macro,0.9708753714043165
+f1_macro,0.9772454290671293
+log_loss,0.041317826227367384
+aciertos,1053
+errores,22
+n_test,1075
