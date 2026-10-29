@@ -36,3 +36,49 @@ La validación es aleatoria estratificada sobre imágenes derivadas de fotograf�
 **Archivos fuente:** `historial_cnn_base.csv`, `historial_cnn_mas_filtros.csv`, `resumen_entrenamiento_cnn.csv`, `resultados_etapa3_cnn.json` y salidas integradas en `notebooks/proyecto_cnn_aes.ipynb`. Los archivos de pesos y gráficos se generan por separado y deben conservarse en `models/` e `images/`, respectivamente.
 
 **Pendiente:** comprobar generalización con el test reservado en la etapa 4, calcular accuracy/precision/recall/F1, matriz de confusión, ejemplos de aciertos y errores, y luego Feature Maps.
+
+## Etapa 4 — Prueba reservada (modelo seleccionado)
+
+Se evaluó exclusivamente el checkpoint `models/cnn_mas_filtros.keras` — elegido antes del test por `val_loss` — sobre las **1.075 imágenes originales de prueba** de A, E y S. El modelo no fue reentrenado ni modificado para realizar esta medición.
+
+La evaluación se ejecutó con **Keras 3.13.2 / backend PyTorch**, cargando los pesos guardados del entrenamiento original en TensorFlow 2.21.0. El notebook incluye celdas que permiten reproducir las métricas directamente en Colab con TensorFlow para la entrega final.
+
+| Métrica de test | CNN seleccionada |
+|---|---:|
+| Accuracy | **97,95 %** (1.053/1.075) |
+| Precision macro | 98,50 % |
+| Recall macro | 97,09 % |
+| F1 macro | 97,72 % |
+| Log loss | 0,04132 |
+| Errores | 22 |
+
+### Métricas y errores por letra
+
+| Letra | Precision | Recall | F1 | Imágenes |
+|---|---:|---:|---:|---:|
+| A | 100,00 % | 100,00 % | 100,00 % | 331 |
+| E | 95,95 % | 99,80 % | 97,83 % | 498 |
+| S | 99,56 % | **91,46 %** | 95,34 % | 246 |
+
+**Matriz de confusión:** filas = letra real, columnas = predicción.
+
+| Real \\ Predicción | A | E | S |
+|---|---:|---:|---:|
+| A | 331 | 0 | 0 |
+| E | 0 | 497 | 1 |
+| S | 0 | **21** | 225 |
+
+La CNN clasificó todas las imágenes A correctamente. La principal dificultad sigue siendo **S → E**: 21 de las 246 imágenes S fueron confundidas con E; solo una imagen E fue clasificada como S. La exactitud global, por sí sola, habría ocultado esa diferencia por clase.
+
+### Comparación descriptiva con la MLP anterior
+
+| Modelo | Accuracy test | Aciertos | F1 macro |
+|---|---:|---:|---:|
+| MLP de EP1 (histórico) | 94,51 % | 1.016/1.075 | 93,65 % |
+| CNN seleccionada de EP2 | **97,95 %** | **1.053/1.075** | **97,72 %** |
+
+La CNN mejoró el porcentaje de aciertos en **3,44 puntos porcentuales** (37 aciertos adicionales), en el mismo conjunto test A/E/S. Esto es evidencia favorable, pero el dataset tiene imágenes transformadas a partir de fotos de origen, por lo que no se extrapola directamente a señas de nuevos sujetos. Las velocidades de entrenamiento **no se comparan** con la MLP histórica.
+
+La etapa 4 queda registrada en `metricas_test_cnn.json`, `metricas_test_cnn.csv`, `metricas_por_clase_test_cnn.csv` y `matriz_confusion_test_cnn.csv`. El notebook `notebooks/proyecto_cnn_aes.ipynb` contiene las celdas para reproducir estos resultados y exportar las imágenes de la matriz de confusión y ejemplos correctos/incorrectos. Las celdas nuevas todavía no tienen salidas de Colab guardadas; se deben ejecutar allí y confirmar los mismos valores antes de la entrega.
+
+**Pendiente para etapa 5:** análisis de activaciones, Feature Maps, comparación experimental ampliada y conclusiones para la presentación oral.
