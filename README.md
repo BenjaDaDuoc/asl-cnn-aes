@@ -1,5 +1,5 @@
 > **EP2 (CNN):** Este repositorio contiene la segunda evaluación en desarrollo. Consulta [README_EP2.md](README_EP2.md) y el [notebook CNN](notebooks/proyecto_cnn_aes.ipynb).  
-> **Estado actual:** etapas 1 y 2 (EDA, preparación y diseño de dos CNN). Todavía no se ha entrenado ninguna CNN.  
+> **Estado actual:** etapas 1–3 programadas (EDA, dos CNN y entrenamiento con EarlyStopping). Las CNN están pendientes de ejecutar con TensorFlow; aún no hay resultados reales de entrenamiento ni test.  
 > **La información de más abajo corresponde a la EP1 y su MLP original.**
 
 ---
