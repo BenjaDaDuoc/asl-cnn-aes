@@ -1,0 +1,77 @@
+{
+  "generado_utc": "2026-10-29T16:03:25.321918+00:00",
+  "semilla": 42,
+  "tensorflow": "2.21.0",
+  "python": "3.13.18",
+  "dispositivos_gpu": [],
+  "modelo_seleccionado_por_val_loss": "cnn_mas_filtros",
+  "configuraciones_filtros": {
+    "cnn_base": [
+      16,
+      32
+    ],
+    "cnn_mas_filtros": [
+      32,
+      64
+    ]
+  },
+  "hiperparametros": {
+    "kernel_size": [
+      3,
+      3
+    ],
+    "pool_size": [
+      2,
+      2
+    ],
+    "padding": "same",
+    "activacion_oculta": "relu",
+    "unidades_densas": 64,
+    "learning_rate": 0.001,
+    "batch_size": 64,
+    "epochs_max": 40,
+    "funcion_perdida": "categorical_crossentropy",
+    "optimizador": "Adam"
+  },
+  "tamanos": {
+    "train": 2625,
+    "val": 657
+  },
+  "resumenes": [
+    {
+      "modelo": "cnn_base",
+      "filtros_1": 16,
+      "filtros_2": 32,
+      "parametros": 105411,
+      "epocas_ejecutadas": 35,
+      "mejor_epoca_val_loss": 31,
+      "early_stopping_antes_max": true,
+      "tiempo_fit_seg": 87.44,
+      "train_loss_restaurado": 0.0003528428205754608,
+      "train_accuracy_restaurado": 1,
+      "val_loss_restaurado": 0.000538261083420366,
+      "val_accuracy_restaurado": 1,
+      "gap_train_val_accuracy": 0
+    },
+    {
+      "modelo": "cnn_mas_filtros",
+      "filtros_1": 32,
+      "filtros_2": 64,
+      "parametros": 219779,
+      "epocas_ejecutadas": 30,
+      "mejor_epoca_val_loss": 30,
+      "early_stopping_antes_max": true,
+      "tiempo_fit_seg": 129.38,
+      "train_loss_restaurado": 0.00019891611009370536,
+      "train_accuracy_restaurado": 1,
+      "val_loss_restaurado": 0.00035160520928911865,
+      "val_accuracy_restaurado": 1,
+      "gap_train_val_accuracy": 0
+    }
+  ],
+  "observaciones": [
+    "Validación aleatoria estratificada; podrían existir variantes de una misma imagen de origen.",
+    "Test original reservado: todavía no evaluado ni utilizado para elegir arquitectura.",
+    "Tiempos no comparables con la MLP histórica sin reentrenarla en el mismo entorno."
+  ]
+}
