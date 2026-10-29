@@ -144,6 +144,8 @@ La dificultad principal fue **S confundida con E** (21 imágenes, recall de S �
 
 ## Etapa 5 — Interpretabilidad y comparación MLP/CNN (código listo)
 
+**Compatibilidad del checkpoint MLP de la EP1:** el archivo `models/mlp_asl_aes.keras` fue serializado con parámetros de `GlorotUniform` que algunas versiones actuales de Keras no admiten (`input_axes`, `output_axes`). La sección 21 se actualizó para reconstruir la arquitectura exacta (784→128→64→3, 108.931 parámetros) y llamar a `load_weights(..., skip_mismatch=False)` en el archivo original. **Se preservan los pesos aprendidos; no se reentrena ni se modifica el modelo original.** Si ya tienes Colab abierto, cambia esa celda o vuelve a abrir la última versión de `develop`; no es necesario repetir el entrenamiento de la etapa 3. Se verificó el mecanismo con una prueba de compatibilidad que reproduce el error de deserialización y recupera las predicciones originales idénticas.
+
 El notebook `notebooks/proyecto_cnn_aes.ipynb` incluye ahora las secciones **21–26**, que permiten analizar por qué mejora la CNN sin alterar su entrenamiento:
 
 1. Carga de `models/mlp_asl_aes.keras` y evaluación del checkpoint MLP sobre **exactamente el mismo test A/E/S**. Si sus métricas cambian respecto a la EP1 histórica, se reportará la discrepancia de forma explícita.
