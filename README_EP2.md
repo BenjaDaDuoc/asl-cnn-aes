@@ -1,10 +1,12 @@
 # EP2 — CNN de reconocimiento de letras A, E y S
 
+**Informe técnico consolidado para la entrega:** [INFORME_TECNICO_EP2.md](INFORME_TECNICO_EP2.md) (problema, objetivos, KPIs, EDA, CRISP-DM, arquitectura, resultados, errores, activaciones, conclusiones y reproducibilidad). Este README registra la historia de desarrollo por etapas.
+
 **Asignatura:** Técnicas Avanzadas de Machine Learning I (TLY1102)  
 **Problema:** clasificación de imágenes de signos estáticos del alfabeto dactilológico estadounidense (ASL).  
 **Variante del equipo:** letras **A, E y S**, igual que en la Evaluación Parcial 1 (EP1).
 
-**Estado:** etapas 1–5 ejecutadas en Colab y guardadas en la rama `develop`, incluyendo comparación MLP/CNN, Feature Maps y Grad-CAM para cada clase. Los seis archivos externos de la etapa 5 están subidos a `images/` y `reports/`. El benchmark de tiempos con los tres modelos es opcional y permanece sin ejecutar. Este documento acompaña el trabajo en `develop`; el README original de la MLP se conserva en esta etapa.
+**Estado:** etapas 1–5 ejecutadas en Colab y guardadas en la rama `develop`, incluyendo comparación MLP/CNN, Feature Maps y Grad-CAM para cada clase. Los seis archivos externos de la etapa 5 están subidos a `images/` y `reports/`. El benchmark de tiempos con los tres modelos permanece sin ejecutar: la rúbrica solicita la comparación temporal MLP/CNN, de modo que debe completarse o declararse expresamente como limitación. Este documento acompaña el trabajo en `develop`; el README original de la MLP se conserva en esta etapa.
 
 ## Archivo principal
 
