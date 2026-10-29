@@ -110,4 +110,4 @@ Se reconstruyeron y entrenaron **tres modelos nuevos** con datos, particiones tr
 | CNN base | 35 | 79,13 s | 105.411 | 100 % |
 | CNN con más filtros | 30 | 128,02 s | 219.779 | 100 % |
 
-La MLP fue **4,01 veces más rápida** que la CNN con más filtros en el tiempo de fit medido bajo esta política de entrenamiento; el ratio es **128,02 / 31,92 ≈ 4,01**. Las épocas efectivas difieren por EarlyStopping y la comparación evalúa **tiempo total** bajo las mismas reglas, no costo por época. El resultado valida la importancia del costo computacional, pero no demuestra generalización a personas nuevas. Datos completos: [benchmark_tiempos_mlp_cnn.csv](benchmark_tiempos_mlp_cnn.csv).
+La CNN con más filtros tardó aproximadamente **4,01 veces el tiempo de la MLP** en el fit medido bajo esta política de entrenamiento: **128,02 / 31,92 ≈ 4,01**. Las épocas efectivas difieren por EarlyStopping y la comparación evalúa **tiempo total** bajo las mismas reglas, no costo por época. El resultado valida la importancia del costo computacional, pero no demuestra generalización a personas nuevas. Datos completos: [benchmark_tiempos_mlp_cnn.csv](benchmark_tiempos_mlp_cnn.csv).
