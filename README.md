@@ -1,4 +1,4 @@
-> **EP2 (CNN):** Este repositorio contiene la segunda evaluación en desarrollo. Consulta [README_EP2.md](README_EP2.md) y el [notebook CNN](notebooks/proyecto_cnn_aes.ipynb).  
+> **EP2 (CNN):** Informe consolidado en [INFORME_TECNICO_EP2.md](INFORME_TECNICO_EP2.md), documentación de desarrollo en [README_EP2.md](README_EP2.md) y [notebook ejecutado](notebooks/proyecto_cnn_aes.ipynb).  
 > **Estado actual:** etapas 1–5 ejecutadas y verificadas en `develop`: evaluación test CNN (97,95 %), comparación con la MLP (94,51 %), Feature Maps y Grad-CAM. Los archivos de evidencia están subidos a `reports/` e `images/`. Falta revisión final del informe y preparación de la presentación; el benchmark homogéneo de tiempos es opcional.  
 > **La información de más abajo corresponde a la EP1 y su MLP original.**
 
