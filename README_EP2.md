@@ -4,7 +4,7 @@
 **Problema:** clasificación de imágenes de signos estáticos del alfabeto dactilológico estadounidense (ASL).  
 **Variante del equipo:** letras **A, E y S**, igual que en la Evaluación Parcial 1 (EP1).
 
-> **Estado:** etapa 1 implementada — preparación del dataset y análisis exploratorio (EDA). Todavía **no se ha entrenado ni evaluado una CNN**. Este documento acompaña el trabajo en `develop`; el README original de la MLP se conserva en esta etapa.
+**Estado:** etapas 1 y 2 implementadas — preparación de datos y dos arquitecturas CNN compiladas. **No se han entrenado ni evaluado en test las CNN**. Este documento acompaña el trabajo en `develop`; el README original de la MLP se conserva en esta etapa.
 
 ## Archivo principal
 
@@ -12,7 +12,7 @@
 - `notebooks/proyecto_lenguaje_señas.ipynb`: MLP original de la EP1; sirve como línea base.
 - `data/sign_mnist_train.csv`, `data/sign_mnist_test.csv`: dataset original ya incluido en el repositorio.
 - `models/mlp_asl_aes.keras`: modelo anterior; **no se sobrescribe**.
-- `requirements.txt`: dependencias de esta etapa.
+- `requirements.txt`: dependencias de las etapas 1 y 2 (incluye TensorFlow/Keras).
 
 ## Comprobaciones de los datos
 
@@ -69,13 +69,26 @@ Para Google Colab, clona el repositorio en `/content/asl-cnn-aes` y abre el note
 
 La validación anterior alcanzó un resultado demasiado alto para asumir que mide generalización a fotografías originales desconocidas. Cuando se compare rigurosamente con la CNN, habrá que reejecutar la MLP con particiones y condiciones equivalentes; **no se compararán tiempos de entrenamiento sin medirlos bajo las mismas condiciones**.
 
+## Arquitecturas propuestas (etapa 2)
+
+Las dos alternativas reciben imágenes de (28, 28, 1) y aplican dos bloques `Conv2D(3×3, ReLU, padding=same) → MaxPooling2D(2×2)`, seguidos por `Flatten → Dense(64, ReLU) → Dense(3, softmax)`.
+
+| Configuración | Filtros convolucionales | Parámetros entrenables |
+|---|---|---:|
+| `cnn_base` | 16 → 32 | 105.411 |
+| `cnn_mas_filtros` | 32 → 64 | 219.779 |
+| MLP EP1 (solo referencia histórica) | No aplica | 108.931 |
+
+Ambas CNN usan Adam (learning rate 0,001) y pérdida `categorical_crossentropy` con etiquetas one-hot. Se planificó batch de 64 y hasta 40 épocas con EarlyStopping, **aún sin ejecutar entrenamiento**. Los parámetros son conteos estructurales, no resultados de predicción. La alternativa con más filtros permite estudiar el costo y efecto de incrementar capacidad sin modificar simultáneamente otros hiperparámetros.
+
+El notebook imprime `model.summary()`, compara parámetros y comprueba la forma de salida y la normalización softmax con una pequeña muestra de **validación**, no de test. Esas probabilidades todavía no tienen significado predictivo.
+
 ## Próximas etapas
 
-1. Diseñar y justificar una arquitectura CNN (Conv2D, pooling y capas densas), junto con al menos una alternativa para comparar hiperparámetros.
-2. Entrenar con semilla reproducible, EarlyStopping y registro de curvas de accuracy/loss; investigar posibles casi duplicados.
-3. Evaluar en el test original con accuracy, precision, recall, F1, matriz de confusión y ejemplos correctos/incorrectos.
-4. Comparar MLP y CNN en métricas, parámetros, tiempo y generalización. Visualizar Feature Maps y mapas de activación de cada clase.
-5. Documentar resultados reales, limitaciones, decisiones éticas y conclusiones, preparar la defensa de hasta diez minutos.
+1. **Etapa 3:** entrenar ambas CNN con semilla reproducible, EarlyStopping, registro de tiempos y curvas de accuracy/loss, e investigar el riesgo de casi duplicados.
+2. **Etapa 4:** seleccionar según validación y evaluar en test original con accuracy, precision, recall, F1, matriz de confusión y ejemplos correctos/incorrectos.
+3. **Etapa 5:** comparar MLP y CNN en métricas, parámetros, tiempo y generalización. Visualizar Feature Maps y mapas de activación de cada clase.
+4. **Etapa 6:** documentar resultados reales, limitaciones, decisiones éticas y conclusiones, y preparar la defensa de hasta diez minutos.
 
 ## Alcance responsable
 
