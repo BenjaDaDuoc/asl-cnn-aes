@@ -1,3 +1,9 @@
+> **EP2 (CNN):** Informe consolidado en [INFORME_TECNICO_EP2.md](INFORME_TECNICO_EP2.md), documentación de desarrollo en [README_EP2.md](README_EP2.md) y [notebook ejecutado](notebooks/proyecto_cnn_aes.ipynb).  
+> **Estado actual:** etapas 1–5 ejecutadas y verificadas en `develop`: evaluación test CNN (97,95 %), comparación con la MLP (94,51 %), Feature Maps y Grad-CAM. Los archivos de evidencia están subidos a `reports/` e `images/`. El benchmark homogéneo ya está ejecutado (MLP 31,92 s; CNN seleccionada 128,02 s). Pendientes: defensa oral, revisión final y eventual integración `develop` → `main`.  
+> **La información de más abajo corresponde a la EP1 y su MLP original.**
+
+---
+
 # Reconocimiento de Lenguaje de Señas (ASL) — Clasificación de las letras A, E y S
 
 **Curso:** TLY1102 — Machine Learning Avanzado

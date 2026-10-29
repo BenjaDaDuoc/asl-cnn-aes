@@ -1,0 +1,76 @@
+{
+  "dataset": "Sign Language MNIST — test original A/E/S",
+  "modelo_elegido_previamente": "cnn_mas_filtros",
+  "regla_de_seleccion_previa": "menor val_loss de pesos restaurados (etapa 3)",
+  "sin_reentrenar_en_test": true,
+  "n_test": 1075,
+  "aciertos": 1053,
+  "errores": 22,
+  "evaluado_con": {
+    "keras": "3.13.2",
+    "backend": "torch",
+    "nota": "Modelo Keras entrenado previamente con TensorFlow 2.21.0 en Colab; evaluación en este entorno con Keras/PyTorch."
+  },
+  "metricas": {
+    "accuracy": 0.9795348837209302,
+    "precision_macro": 0.9850115602327992,
+    "recall_macro": 0.9708753714043165,
+    "f1_macro": 0.9772454290671293,
+    "log_loss": 0.041317826227367384
+  },
+  "matriz_confusion": [
+    [
+      331,
+      0,
+      0
+    ],
+    [
+      0,
+      497,
+      1
+    ],
+    [
+      0,
+      21,
+      225
+    ]
+  ],
+  "clases": [
+    "A",
+    "E",
+    "S"
+  ],
+  "metricas_por_clase": {
+    "A": {
+      "precision": 1,
+      "recall": 1,
+      "f1_score": 1,
+      "support": 331
+    },
+    "E": {
+      "precision": 0.9594594594594594,
+      "recall": 0.9979919678714859,
+      "f1_score": 0.9783464566929134,
+      "support": 498
+    },
+    "S": {
+      "precision": 0.995575221238938,
+      "recall": 0.9146341463414634,
+      "f1_score": 0.9533898305084746,
+      "support": 246
+    }
+  },
+  "mlp_ep1_referencia": {
+    "aciertos": 1016,
+    "n_test": 1075,
+    "accuracy": 0.9451162790697675,
+    "f1_macro_reportado": 0.9365
+  },
+  "diferencia_accuracy_puntos_porcentuales": 3.441860465116279,
+  "limitaciones": [
+    "Test usado exclusivamente para evaluación; no para seleccionar arquitectura ni hiperparámetros.",
+    "La validación estratificada podría mezclar aumentos de una fotografía entre train y validación.",
+    "No prueba generalización a nuevos firmantes o condiciones externas.",
+    "Diferencias entre backend PyTorch y TensorFlow podrían alterar levemente los decimales de probabilidades."
+  ]
+}

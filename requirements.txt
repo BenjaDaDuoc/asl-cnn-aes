@@ -1,0 +1,8 @@
+# EP2: EDA, preparación y diseño de CNN con TensorFlow/Keras
+numpy>=1.26
+pandas>=2.1
+matplotlib>=3.8
+seaborn>=0.13
+scikit-learn>=1.4
+notebook>=7.0
+tensorflow>=2.16
