@@ -4,7 +4,7 @@
 **Problema:** clasificación de imágenes de signos estáticos del alfabeto dactilológico estadounidense (ASL).  
 **Variante del equipo:** letras **A, E y S**, igual que en la Evaluación Parcial 1 (EP1).
 
-**Estado:** etapas 1–3 programadas — EDA, dos CNN y entrenamiento con EarlyStopping, curvas y selección por validación. **Pendiente de ejecutar el entrenamiento real con TensorFlow; todavía no hay métricas verificadas de CNN ni evaluación del test.** Este documento acompaña el trabajo en `develop`; el README original de la MLP se conserva en esta etapa.
+**Estado:** etapas 1–3 ejecutadas en Google Colab — EDA, arquitecturas y entrenamiento real de ambas CNN (TensorFlow 2.21.0). **Resultados de validación y notebook ejecutado disponibles; test oficial aún sin evaluar.** Los modelos y PNG se respaldaron en ZIP y todavía necesitan subirse individualmente al repositorio. Este documento acompaña el trabajo en `develop`; el README original de la MLP se conserva en esta etapa.
 
 ## Archivo principal
 
@@ -12,7 +12,8 @@
 - `notebooks/proyecto_lenguaje_señas.ipynb`: MLP original de la EP1; sirve como línea base.
 - `data/sign_mnist_train.csv`, `data/sign_mnist_test.csv`: dataset original ya incluido en el repositorio.
 - `models/mlp_asl_aes.keras`: modelo anterior; **no se sobrescribe**.
-- `requirements.txt`: dependencias de las etapas 1 y 2 (incluye TensorFlow/Keras).
+- `requirements.txt`: dependencias del proyecto (incluye TensorFlow/Keras).
+- `reports/`: historiales completos, resumen CSV/JSON y [análisis de resultados](reports/README.md) de la etapa 3.
 
 ## Comprobaciones de los datos
 
@@ -79,22 +80,22 @@ Las dos alternativas reciben imágenes de (28, 28, 1) y aplican dos bloques `Con
 | `cnn_mas_filtros` | 32 → 64 | 219.779 |
 | MLP EP1 (solo referencia histórica) | No aplica | 108.931 |
 
-Ambas CNN usan Adam (learning rate 0,001) y pérdida `categorical_crossentropy` con etiquetas one-hot. Se planificó batch de 64 y hasta 40 épocas con EarlyStopping, **aún sin ejecutar entrenamiento**. Los parámetros son conteos estructurales, no resultados de predicción. La alternativa con más filtros permite estudiar el costo y efecto de incrementar capacidad sin modificar simultáneamente otros hiperparámetros.
+Ambas CNN usan Adam (learning rate 0,001) y pérdida `categorical_crossentropy` con etiquetas one-hot. Se utilizó batch de 64 y un máximo de 40 épocas con EarlyStopping; el entrenamiento ya se ejecutó. Los parámetros son conteos estructurales, no resultados de predicción. La alternativa con más filtros permite estudiar el costo y efecto de incrementar capacidad sin modificar simultáneamente otros hiperparámetros.
 
 El notebook imprime `model.summary()`, compara parámetros y comprueba la forma de salida y la normalización softmax con una pequeña muestra de **validación**, no de test. Esas probabilidades todavía no tienen significado predictivo.
 
 ## Etapa 3 — Entrenamiento y validación
 
-**El código está implementado, pero pendiente de ejecución con TensorFlow.** El notebook, al ejecutarse:
+**El código se ejecutó con TensorFlow en Colab (29-10-2026)**. El notebook:
 
 1. Construye nuevamente desde cero `cnn_base` y `cnn_mas_filtros` con semilla 42.
 2. Entrena hasta 40 épocas por modelo y batch size 64; aplica **EarlyStopping** (`val_loss`, paciencia 7, restauración de mejores pesos) y **ReduceLROnPlateau** (`val_loss`, factor 0,5, paciencia 3).
 3. Guarda automáticamente `models/cnn_base.keras` y `models/cnn_mas_filtros.keras`, historiales en `reports/`, curvas en `images/` y un JSON con resultados, hiperparámetros, tiempos y entorno.
 4. Elige el modelo con **menor val_loss** con los pesos restaurados (solo validación) y genera un diagnóstico con valores reales de entrenamiento, posible sobreajuste y alertas de validación casi perfecta.
 
-**No hay métricas ficticias:** las cifras se generan al ejecutar `fit()`, no al escribir el notebook. El test original permanece reservado para la etapa 4. La validación aleatoria tiene riesgo de contar variaciones de una fotografía de origen en train y val, por lo que puede ser demasiado optimista.
+Los **resultados reales de validación** están registrados en `reports/README.md` y en los CSV/JSON. La CNN base alcanzó 100 % de accuracy en validación tras 35 épocas (87,44 s) y la CNN con más filtros también 100 % tras 30 épocas (129,38 s); fue seleccionada por menor `val_loss` del modelo restaurado. Esto **no demuestra generalización externa**. El test original permanece reservado para la etapa 4. La validación aleatoria tiene riesgo de contar variaciones de una fotografía de origen en train y val, por lo que puede ser demasiado optimista.
 
-### Ejecución práctica en Google Colab
+### Reproducción del entrenamiento en Google Colab
 
 1. Abre `notebooks/proyecto_cnn_aes.ipynb` desde la rama `develop` en Google Colab.
 2. Ejecuta **antes de todas las celdas**, en una celda temporal:
@@ -104,7 +105,7 @@ El notebook imprime `model.summary()`, compara parámetros y comprueba la forma 
 3. En caso de que falten paquetes, ejecuta `!pip install -r /content/asl-cnn-aes/requirements.txt` y reinicia el entorno de ejecución. Luego usa **Entorno de ejecución → Ejecutar todas**.
 4. Los archivos se guardan en `/content/asl-cnn-aes/models/`, `/content/asl-cnn-aes/reports/` y `/content/asl-cnn-aes/images/`. **Descárgalos o súbelos a GitHub antes de cerrar Colab**, porque su almacenamiento es temporal.
 
-### Archivos esperados después de ejecutar
+### Archivos producidos por la ejecución
 
 - `models/cnn_base.keras` y `models/cnn_mas_filtros.keras`.
 - `reports/historial_cnn_base.csv`, `reports/historial_cnn_mas_filtros.csv`, `reports/resumen_entrenamiento_cnn.csv`, `reports/resultados_etapa3_cnn.json`.
