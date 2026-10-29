@@ -4,7 +4,7 @@
 **Problema:** clasificación de imágenes de signos estáticos del alfabeto dactilológico estadounidense (ASL).  
 **Variante del equipo:** letras **A, E y S**, igual que en la Evaluación Parcial 1 (EP1).
 
-**Estado:** etapas 1 y 2 implementadas — preparación de datos y dos arquitecturas CNN compiladas. **No se han entrenado ni evaluado en test las CNN**. Este documento acompaña el trabajo en `develop`; el README original de la MLP se conserva en esta etapa.
+**Estado:** etapas 1–3 programadas — EDA, dos CNN y entrenamiento con EarlyStopping, curvas y selección por validación. **Pendiente de ejecutar el entrenamiento real con TensorFlow; todavía no hay métricas verificadas de CNN ni evaluación del test.** Este documento acompaña el trabajo en `develop`; el README original de la MLP se conserva en esta etapa.
 
 ## Archivo principal
 
@@ -83,12 +83,38 @@ Ambas CNN usan Adam (learning rate 0,001) y pérdida `categorical_crossentropy` 
 
 El notebook imprime `model.summary()`, compara parámetros y comprueba la forma de salida y la normalización softmax con una pequeña muestra de **validación**, no de test. Esas probabilidades todavía no tienen significado predictivo.
 
+## Etapa 3 — Entrenamiento y validación
+
+**El código está implementado, pero pendiente de ejecución con TensorFlow.** El notebook, al ejecutarse:
+
+1. Construye nuevamente desde cero `cnn_base` y `cnn_mas_filtros` con semilla 42.
+2. Entrena hasta 40 épocas por modelo y batch size 64; aplica **EarlyStopping** (`val_loss`, paciencia 7, restauración de mejores pesos) y **ReduceLROnPlateau** (`val_loss`, factor 0,5, paciencia 3).
+3. Guarda automáticamente `models/cnn_base.keras` y `models/cnn_mas_filtros.keras`, historiales en `reports/`, curvas en `images/` y un JSON con resultados, hiperparámetros, tiempos y entorno.
+4. Elige el modelo con **menor val_loss** con los pesos restaurados (solo validación) y genera un diagnóstico con valores reales de entrenamiento, posible sobreajuste y alertas de validación casi perfecta.
+
+**No hay métricas ficticias:** las cifras se generan al ejecutar `fit()`, no al escribir el notebook. El test original permanece reservado para la etapa 4. La validación aleatoria tiene riesgo de contar variaciones de una fotografía de origen en train y val, por lo que puede ser demasiado optimista.
+
+### Ejecución práctica en Google Colab
+
+1. Abre `notebooks/proyecto_cnn_aes.ipynb` desde la rama `develop` en Google Colab.
+2. Ejecuta **antes de todas las celdas**, en una celda temporal:
+   ```python
+   !git clone --branch develop https://github.com/BenjaDaDuoc/asl-cnn-aes.git /content/asl-cnn-aes
+   ```
+3. En caso de que falten paquetes, ejecuta `!pip install -r /content/asl-cnn-aes/requirements.txt` y reinicia el entorno de ejecución. Luego usa **Entorno de ejecución → Ejecutar todas**.
+4. Los archivos se guardan en `/content/asl-cnn-aes/models/`, `/content/asl-cnn-aes/reports/` y `/content/asl-cnn-aes/images/`. **Descárgalos o súbelos a GitHub antes de cerrar Colab**, porque su almacenamiento es temporal.
+
+### Archivos esperados después de ejecutar
+
+- `models/cnn_base.keras` y `models/cnn_mas_filtros.keras`.
+- `reports/historial_cnn_base.csv`, `reports/historial_cnn_mas_filtros.csv`, `reports/resumen_entrenamiento_cnn.csv`, `reports/resultados_etapa3_cnn.json`.
+- `images/loss_cnn_base.png`, `images/accuracy_cnn_base.png`, `images/loss_cnn_mas_filtros.png`, `images/accuracy_cnn_mas_filtros.png`, `images/comparacion_val_loss_cnn.png`.
+
 ## Próximas etapas
 
-1. **Etapa 3:** entrenar ambas CNN con semilla reproducible, EarlyStopping, registro de tiempos y curvas de accuracy/loss, e investigar el riesgo de casi duplicados.
-2. **Etapa 4:** seleccionar según validación y evaluar en test original con accuracy, precision, recall, F1, matriz de confusión y ejemplos correctos/incorrectos.
-3. **Etapa 5:** comparar MLP y CNN en métricas, parámetros, tiempo y generalización. Visualizar Feature Maps y mapas de activación de cada clase.
-4. **Etapa 6:** documentar resultados reales, limitaciones, decisiones éticas y conclusiones, y preparar la defensa de hasta diez minutos.
+1. **Etapa 4:** evaluar una sola vez el modelo seleccionado en el test original con accuracy, precision, recall, F1, matriz de confusión y análisis de errores.
+2. **Etapa 5:** reentrenar MLP con condiciones comparables, comparar rendimiento y tiempos y visualizar Feature Maps y mapas de activación de cada clase.
+3. Documentar observaciones reales, limitaciones y consideraciones éticas; preparar la defensa individual de hasta diez minutos.
 
 ## Alcance responsable
 
