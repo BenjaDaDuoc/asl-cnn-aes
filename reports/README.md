@@ -35,7 +35,7 @@ La validación es aleatoria estratificada sobre imágenes derivadas de fotograf�
 
 **Archivos fuente:** `historial_cnn_base.csv`, `historial_cnn_mas_filtros.csv`, `resumen_entrenamiento_cnn.csv`, `resultados_etapa3_cnn.json` y salidas integradas en `notebooks/proyecto_cnn_aes.ipynb`. Los archivos de pesos y gráficos se generan por separado y deben conservarse en `models/` e `images/`, respectivamente.
 
-**Pendiente:** comprobar generalización con el test reservado en la etapa 4, calcular accuracy/precision/recall/F1, matriz de confusión, ejemplos de aciertos y errores, y luego Feature Maps.
+**Completado:** evaluación del test reservado en la etapa 4 y Feature Maps/Grad-CAM en etapa 5. Queda por evaluar la generalización con fotografías y sujetos independientes, fuera del alcance de la EP2.
 
 ## Etapa 4 — Prueba reservada (modelo seleccionado)
 
@@ -91,11 +91,23 @@ El notebook actualizado contiene las secciones 21–26 con:
 - Comparación de accuracy, precision, recall y F1 macro; parámetros y métricas por clase con tablas y gráficos.
 - Feature Maps (primeras dos convoluciones, 8 filtros por capa) sobre tres imágenes A/E/S correctamente clasificadas.
 - Grad-CAM con los pesos del clasificador final, para las activaciones asociadas a **cada clase** en tres imágenes representativas; no altera los pesos ni selecciona hiperparámetros con test.
-- Benchmark controlado opcional de tiempos de entrenamiento MLP vs dos CNN; **desactivado por defecto** para no repetir entrenamiento sin necesidad.
+- Benchmark controlado de tiempos de entrenamiento MLP vs dos CNN; **ejecutado en Colab** y respaldado en el CSV de reportes.
 - Interpretación, limitaciones, reflexiones y guía de defensa de máximo 10 minutos.
 
 **Verificado en el notebook guardado:** las cinco celdas de código de esta etapa se ejecutaron sin errores. La MLP original reconstruida a partir de los pesos del checkpoint produjo exactamente 1.016/1.075 aciertos (94,51 %), mientras que la CNN produjo 1.053/1.075 (97,95 %). Los 22 errores de la CNN también fueron errores de la MLP; la MLP cometió 37 errores adicionales que la CNN acertó.
 
 **Comparación por letra:** el recall de E pasó de 95,58 % a 99,80 % (+4,22 pp), y el de S de 84,96 % a 91,46 % (+6,50 pp). A mantuvo 100 % de recall. Los `Feature Maps` generados contienen las formas (3,28,28,32) y (3,14,14,64). Los mapas Grad-CAM para A/E/S se generaron; se informó que una combinación (imagen S, clase A) no mostró contribuciones positivas, algo que no debe interpretarse como ausencia de información visual.
 
-Los archivos `comparacion_mlp_cnn_test.csv`, `comparacion_por_letra_mlp_cnn.csv`, `comparacion_recall_mlp_cnn.png`, `feature_maps_primera_conv.png`, `feature_maps_segunda_conv.png` y `gradcam_activaciones_por_clase.png` ya están subidos a `develop`. El benchmark opcional quedó desactivado y no se deben comparar tiempos históricos de MLP y CNN como si fueran mediciones equivalentes.
+Los archivos `comparacion_mlp_cnn_test.csv`, `comparacion_por_letra_mlp_cnn.csv`, `comparacion_recall_mlp_cnn.png`, `feature_maps_primera_conv.png`, `feature_maps_segunda_conv.png` y `gradcam_activaciones_por_clase.png` ya están subidos a `develop`. El benchmark de tiempos quedó ejecutado y documentado en `benchmark_tiempos_mlp_cnn.csv`. La comparación mide fit total de una misma sesión, no las ejecuciones históricas.
+
+## Benchmark controlado de tiempos — criterio de comparación (completado)
+
+Se reconstruyeron y entrenaron **tres modelos nuevos** con datos, particiones train/validación, semilla, optimizador, batch, máximo de épocas y reglas de detención equivalentes, sin reemplazar los checkpoints usados para el test.
+
+| Modelo | Épocas ejecutadas | Tiempo fit | Parámetros | Accuracy validación |
+|---|---:|---:|---:|---:|
+| MLP | 40 | 31,92 s | 108.931 | 100 % |
+| CNN base | 35 | 79,13 s | 105.411 | 100 % |
+| CNN con más filtros | 30 | 128,02 s | 219.779 | 100 % |
+
+La MLP fue **4,01 veces más rápida** que la CNN con más filtros en el tiempo de fit medido bajo esta política de entrenamiento; el ratio es **128,02 / 31,92 ≈ 4,01**. Las épocas efectivas difieren por EarlyStopping y la comparación evalúa **tiempo total** bajo las mismas reglas, no costo por época. El resultado valida la importancia del costo computacional, pero no demuestra generalización a personas nuevas. Datos completos: [benchmark_tiempos_mlp_cnn.csv](benchmark_tiempos_mlp_cnn.csv).
